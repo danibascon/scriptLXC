@@ -12,7 +12,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			;;
 	esac
 
-	
+	estado= $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2)
 
 
 
