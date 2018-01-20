@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 for (( i=1 ; i<3 ; i++ )) ;do
 	case $i in
 		1)
@@ -38,7 +36,6 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
 	read 
-
 	while [ $(lxc-attach -n $host -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt $num ] ;do
 		echo 'El consumo de RAM no ha superado el 70% de su capacidad'
 		sleep 3s
