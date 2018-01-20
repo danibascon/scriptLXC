@@ -6,9 +6,13 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	case $i in
 		1)
 			host='maq1'
+			num=157286
+			comentario='Procedemos a realizar la migración'
 			;;
 		2)
 			host='maq2'
+			num=314572
+			comentario='Procedemos a aumentar la RAM'		
 			;;
 	esac
 
@@ -35,14 +39,15 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	echo 'Momento de comprobación'
 	read 
 
-	while [ $(lxc-attach -n maq1 -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt 157286 ] ;do
+	while [ $(lxc-attach -n $host -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt $num ] ;do
 		echo 'El consumo de RAM no ha superado el 70% de su capacidad'
 		sleep 3s
-
-
+	done
 	echo 'El consumo de RAM a susperado al 70%'
-	echo 'Procedemos la migración'
+	echo $comentario
 done
+iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
+lxc-stop -n $host
 
 
 #					stress -d 1 --vm-bytes 512M --timeout 10
