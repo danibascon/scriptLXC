@@ -18,7 +18,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		lxc-start -n $host
 	done
 	if [[ host='maq1' ]] ;then
-		var = $host
+		var=$host
 	fi
 	if [[ $host == 'maq2' ]] ;then
 		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco /var/www/html		
