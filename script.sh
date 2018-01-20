@@ -36,6 +36,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	fi
 	lxc-device -n $host add /dev/mapper/BASCON-disco
 	lxc-attach -n $host -- mount /dev/mapper/BASCON-disco /var/www/html
+	lxc-attach -n $host -- systemctl restart apache2
 	sleep 3s
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
