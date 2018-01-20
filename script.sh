@@ -18,7 +18,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		lxc-start -n $host
 		ip=''
 	done
-	while [ ip != $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5 |grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ]
+	while [ ip != $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5 |grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ] ;do
 		ip=$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)
 	done
 	if [[ host='maq1' ]] ;then
