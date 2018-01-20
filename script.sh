@@ -12,12 +12,8 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			;;
 	esac
 
-	estado='STOPPED'	
-	while [[ $estado == 'STOPPED' ]] ;do
-		lxc-start -n $host
-		estado= $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2)
-		echo $estado
-		sleep 10s
+	lxc-start -n $host
+	#estado= $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2)
 
 
 	done
