@@ -12,12 +12,10 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			;;
 	esac
 
-	lxc-start -n $host
-	#estado= $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2)
-
+	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
+		lxc-start -n $host
 
 	done
-
 
 
 
