@@ -21,6 +21,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	if [[ $host == 'maq2' ]] ;then
 		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco /var/www/html		
 		lxc-device -n $var del /dev/mapper/BASCON-disco
+		lxc-stop -n $var
 		lvresize -L +50M /dev/BASCON/disco
 		mount /dev/BASCON/disco /mnt/
 		xfs_growfs /dev/BASCON/disco 
@@ -34,25 +35,15 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	echo 'Momento de comprobación'
 	read 
 
-	if [[ $(lxc-attach -n maq1 -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt 157286 ]] ;then
+	while [ $(lxc-attach -n maq1 -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt 157286 ] ;do
+		echo 'El consumo de RAM no ha superado el 70% de su capacidad'
+		sleep 3s
+
+
 	echo 'El consumo de RAM a susperado al 70%'
-	echo 'Procedemos la mirgración'
-
-
-
-
-
-
-
-
-	lxc-stop -n $host
+	echo 'Procedemos la migración'
 done
 
 
-
-
-
-
-
-
-
+#					stress -d 1 --vm-bytes 512M --timeout 10
+#					stress -d 1 --vm-bytes 1024 --timeout 10
