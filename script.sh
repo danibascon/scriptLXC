@@ -16,6 +16,10 @@ for (( i=1 ; i<3 ; i++ )) ;do
 
 	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
 		lxc-start -n $host
+		ip=''
+	done
+	while [ ip != $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5 |grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ]
+		ip=$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)
 	done
 	if [[ host='maq1' ]] ;then
 		var=$host
@@ -32,7 +36,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	fi
 	lxc-device -n $host add /dev/mapper/BASCON-disco
 	lxc-attach -n $host -- mount /dev/mapper/BASCON-disco /var/www/html
-	ip= $(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)
+	sleep 3s
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
 	read 
