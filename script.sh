@@ -18,12 +18,15 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		lxc-start -n $host
 		ip=''
 	done
-	while [ ip != $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5 |grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ] ;do
+	while [ "$ip" !=  echo $(echo "$ip" | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ] ;do
 		echo 'obteniendo ip'
-		ip=$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)
+		sleep 3s
+		ip="$(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)"
+
 	done
+	clear
 	echo "ip obtenida: $ip"
-	if [[ host='maq1' ]] ;then
+	if [[ $host='maq1' ]] ;then
 		var=$host
 	fi
 	if [[ $host == 'maq2' ]] ;then
