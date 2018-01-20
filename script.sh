@@ -13,14 +13,16 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			comentario='Procedemos a aumentar la RAM'		
 			;;
 	esac
-
+	echo 'arrancado $host'
 	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
 		lxc-start -n $host
 		ip=''
 	done
 	while [ ip != $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5 |grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ] ;do
+		echo 'obteniendo ip'
 		ip=$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)
 	done
+	echo 'ip obtenida: $ip'
 	if [[ host='maq1' ]] ;then
 		var=$host
 	fi
@@ -34,10 +36,11 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		umount /mnt/
 		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
 	fi
+	echo 'añadiendo volumen logico'
 	lxc-device -n $host add /dev/mapper/BASCON-disco
 	lxc-attach -n $host -- mount /dev/mapper/BASCON-disco /var/www/html
 	lxc-attach -n $host -- systemctl restart apache2
-	sleep 3s
+	echo 'añadiendo regla iptable'
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
 	read 
