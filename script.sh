@@ -18,7 +18,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			estado= $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2)
 
 
-
+	done
 
 
 
