@@ -13,7 +13,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			comentario='Procedemos a aumentar la RAM'		
 			;;
 	esac
-	echo 'arrancado $host'
+	echo "arrancado $host"
 	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
 		lxc-start -n $host
 		ip=''
@@ -22,7 +22,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		echo 'obteniendo ip'
 		ip=$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)
 	done
-	echo 'ip obtenida: $ip'
+	echo "ip obtenida: $ip"
 	if [[ host='maq1' ]] ;then
 		var=$host
 	fi
