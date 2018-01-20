@@ -45,6 +45,12 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	done
 	echo 'El consumo de RAM a susperado al 70%'
 	echo $comentario
+	if [[ $host == 'maq2' ]] ;then
+		lxc-cgroup -n $host memory.limit_in_bytes 2000M
+		echo 'Se ha amuntado la RAM'
+		echo 'Comprobación'
+		read
+	fi
 done
 iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
 lxc-stop -n $host
