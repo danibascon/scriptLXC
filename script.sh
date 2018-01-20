@@ -18,16 +18,21 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	if [[ host='maq1' ]] ;then
 		var = $host
 	fi
+	if [[ $host == 'maq2' ]] ;then
+		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco /var/www/html		
+		lxc-device -n $var del /dev/mapper/BASCON-disco
+		lvresize -L +50M /dev/BASCON/disco
+		mount /dev/BASCON/disco /mnt/
+		xfs_growfs /dev/BASCON/disco 
+		umount /mnt/
+		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
+	fi
 	lxc-device -n $host add /dev/mapper/BASCON-disco
 	lxc-attach -n $host-- mount /dev/mapper/BASCON-disco /var/www/html
 	ip= $(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)
-	if [[ $host == 'maq2' ]] ;then
-		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
-		lxc-device -n $var add /dev/mapper/BASCON-disco
-		lxc-attach -n $var -- mount /dev/mapper/BASCON-disco /var/www/html
-	fi
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
+	read 
 done
 
 
