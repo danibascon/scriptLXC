@@ -28,11 +28,24 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
 	fi
 	lxc-device -n $host add /dev/mapper/BASCON-disco
-	lxc-attach -n $host-- mount /dev/mapper/BASCON-disco /var/www/html
+	lxc-attach -n $host -- mount /dev/mapper/BASCON-disco /var/www/html
 	ip= $(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
 	read 
+
+	if [[ $(lxc-attach -n maq1 -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt 157286 ]] ;then
+	echo 'El consumo de RAM a susperado al 70%'
+	echo 'Procedemos la mirgración'
+
+
+
+
+
+
+
+
+	lxc-stop -n $host
 done
 
 
