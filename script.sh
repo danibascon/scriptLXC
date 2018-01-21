@@ -10,9 +10,20 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		2)
 			host='maq2'
 			num=314572
-			comentario='Procedemos a aumentar la RAM'		
+			comentario='Procedemos a aumentar la RAM'
+			var='maq1'
 			;;
 	esac
+	if [[ $host == 'maq2' ]] ;then
+		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco		
+		lxc-device -n $var del /dev/mapper/BASCON-disco
+		lxc-stop -n $var
+		lvresize -L +50M /dev/BASCON/disco
+		mount /dev/BASCON/disco /mnt/
+		xfs_growfs /dev/BASCON/disco 
+		umount /mnt/
+		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
+	fi
 	echo "arrancado $host"
 	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
 		lxc-start -n $host
@@ -25,19 +36,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	done
 	clear
 	echo "ip obtenida: $ip"
-	if [[ $host='maq1' ]] ;then
-		var="$host"
-	fi
-	if [[ $host == 'maq2' ]] ;then
-		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco		
-		lxc-device -n $var del /dev/mapper/BASCON-disco
-		lxc-stop -n $var
-		lvresize -L +50M /dev/BASCON/disco
-		mount /dev/BASCON/disco /mnt/
-		xfs_growfs /dev/BASCON/disco 
-		umount /mnt/
-		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
-	fi
+
 	echo 'añadiendo volumen logico'
 	lxc-device -n $host add /dev/mapper/BASCON-disco
 	lxc-attach -n $host -- mount /dev/mapper/BASCON-disco /var/www/html
