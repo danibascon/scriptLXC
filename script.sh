@@ -15,14 +15,17 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			;;
 	esac
 	if [[ $host == 'maq2' ]] ;then
+		echo 'Desmontamos el volumen de $var'
 		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco		
 		lxc-device -n $var del /dev/mapper/BASCON-disco
 		lxc-stop -n $var
+		echo 'redimensionamos el volumen'
 		lvresize -L +50M /dev/BASCON/disco
 		mount /dev/BASCON/disco /mnt/
 		xfs_growfs /dev/BASCON/disco 
 		umount /mnt/
 		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
+		clear
 	fi
 	echo "arrancado $host"
 	while [ $(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 2) = 'STOPPED' ] ;do
