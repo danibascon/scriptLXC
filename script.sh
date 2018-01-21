@@ -15,7 +15,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 			;;
 	esac
 	if [[ $host == 'maq2' ]] ;then
-		echo 'Desmontamos el volumen de $var'
+		echo "Desmontamos el volumen de $var"
 		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco		
 		lxc-device -n $var del /dev/mapper/BASCON-disco
 		lxc-stop -n $var
@@ -25,6 +25,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		xfs_growfs /dev/BASCON/disco 
 		umount /mnt/
 		iptables -t nat -D PREROUTING `iptables -t nat -L --line-number | egrep $ip | cut -d " " -f 1`
+		sleep 2s
 		clear
 	fi
 	echo "arrancado $host"
@@ -35,7 +36,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	while [ "$ip" !=  echo $(echo "$ip" | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ] ;do
 		echo 'obteniendo ip'
 		sleep 3s
-		ip="$(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)"
+		ip="$(lxc-ls -f | grep $host | tr -s " " | cut -d " " -f 5)"
 	done
 	clear
 	echo "ip obtenida: $ip"
