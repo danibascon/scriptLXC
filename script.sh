@@ -22,15 +22,14 @@ for (( i=1 ; i<3 ; i++ )) ;do
 		echo 'obteniendo ip'
 		sleep 3s
 		ip="$(lxc-ls -f | grep maq1 | tr -s " " | cut -d " " -f 5)"
-
 	done
 	clear
 	echo "ip obtenida: $ip"
 	if [[ $host='maq1' ]] ;then
-		var=$host
+		var="$host"
 	fi
 	if [[ $host == 'maq2' ]] ;then
-		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco /var/www/html		
+		lxc-attach -n $var -- umount /dev/mapper/BASCON-disco		
 		lxc-device -n $var del /dev/mapper/BASCON-disco
 		lxc-stop -n $var
 		lvresize -L +50M /dev/BASCON/disco
@@ -47,7 +46,7 @@ for (( i=1 ; i<3 ; i++ )) ;do
 	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $ip:80
 	echo 'Momento de comprobación'
 	read 
-	while [ $(lxc-attach -n $host -- free | grep Mem | tr -s " " | cut -d " " -f 4) -lt $num ] ;do
+	while [ $(lxc-attach -n $host -- free | grep Mem | tr -s " " | cut -d " " -f 4) -ge $num ] ;do
 		echo 'El consumo de RAM no ha superado el 70% de su capacidad'
 		sleep 3s
 	done
